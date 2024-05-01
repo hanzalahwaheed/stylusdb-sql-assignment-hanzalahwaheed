@@ -189,7 +189,8 @@
       "comparison": "exact",
       "timeout": 10,
       "points": 10
-    },{
+    },
+    {
       "name": "STEP-20 Test",
       "setup": "npm install",
       "run": "npm run test:20",
