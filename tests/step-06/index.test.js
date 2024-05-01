@@ -1,9 +1,5 @@
 const readCSV = require("../../src/csvReader");
-const {
-  parseQuery,
-  parseQueryWithWHERE,
-  parseQueryWithMultipleWHERE,
-} = require("../../src/queryParser");
+const { parse_query_with_multiple_WHERE } = require("../../src/queryParser");
 const {
   execute_SELECT_query,
   execute_SELECT_query_with_WHERE,
@@ -20,7 +16,7 @@ test("Read CSV File", async () => {
 
 test("Parse SQL Query", () => {
   const query = "SELECT id, name FROM sample";
-  const parsed = parseQueryWithMultipleWHERE(query);
+  const parsed = parse_query_with_multiple_WHERE(query);
   expect(parsed).toEqual({
     fields: ["id", "name"],
     table: "sample",
@@ -40,7 +36,7 @@ test("Execute SQL Query", async () => {
 
 test("Parse SQL Query with WHERE Clause", () => {
   const query = "SELECT id, name FROM sample WHERE age = 25";
-  const parsed = parseQueryWithMultipleWHERE(query);
+  const parsed = parse_query_with_multiple_WHERE(query);
   expect(parsed).toEqual({
     fields: ["id", "name"],
     table: "sample",
@@ -65,7 +61,7 @@ test("Execute SQL Query with WHERE Clause", async () => {
 
 test("Parse SQL Query with Multiple WHERE Clauses", () => {
   const query = "SELECT id, name FROM sample WHERE age = 30 AND name = John";
-  const parsed = parseQueryWithMultipleWHERE(query);
+  const parsed = parse_query_with_multiple_WHERE(query);
   expect(parsed).toEqual({
     fields: ["id", "name"],
     table: "sample",

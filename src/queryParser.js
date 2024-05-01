@@ -55,7 +55,7 @@ function parse_query_with_multiple_WHERE(query) {
 }
 
 module.exports = {
-  parseQuery: parse_query,
-  parseQueryWithWHERE: parse_query_with_WHERE,
-  parseQueryWithMultipleWHERE: parse_query_with_multiple_WHERE,
+  parse_query,
+  parse_query_with_WHERE,
+  parse_query_with_multiple_WHERE,
 };

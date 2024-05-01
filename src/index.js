@@ -1,12 +1,12 @@
 const {
-  parseQuery,
-  parseQueryWithWHERE,
-  parseQueryWithMultipleWHERE,
+  parse_query,
+  parse_query_with_WHERE,
+  parse_query_with_multiple_WHERE,
 } = require("./queryParser");
 const readCSV = require("./csvReader");
 
 async function execute_SELECT_query(query) {
-  const { fields, table } = parseQuery(query);
+  const { fields, table } = parse_query(query);
   const data = await readCSV(`${table}.csv`);
 
   // Filter the fields based on the query
@@ -20,7 +20,7 @@ async function execute_SELECT_query(query) {
 }
 
 async function execute_SELECT_query_with_WHERE(query) {
-  const { fields, table, whereClause } = parseQueryWithWHERE(query);
+  const { fields, table, whereClause } = parse_query_with_WHERE(query);
   const data = await readCSV(`${table}.csv`);
 
   // Filtering based on WHERE clause
@@ -40,7 +40,8 @@ async function execute_SELECT_query_with_WHERE(query) {
 }
 
 async function execute_SELECT_query_with_multiple_WHERE(query) {
-  const { fields, table, whereClauses } = parseQueryWithMultipleWHERE(query);
+  const { fields, table, whereClauses } =
+    parse_query_with_multiple_WHERE(query);
   const data = await readCSV(`${table}.csv`);
 
   // Filtering based on WHERE clauses
