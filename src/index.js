@@ -19,6 +19,26 @@ async function execute_SELECT_query(query) {
   });
 }
 
+function evaluateCondition(row, clause) {
+  const { field, operator, value } = clause;
+  switch (operator) {
+    case "=":
+      return row[field] === value;
+    case "!=":
+      return row[field] !== value;
+    case ">":
+      return row[field] > value;
+    case "<":
+      return row[field] < value;
+    case ">=":
+      return row[field] >= value;
+    case "<=":
+      return row[field] <= value;
+    default:
+      throw new Error(`Unsupported operator: ${operator}`);
+  }
+}
+
 async function execute_SELECT_query_with_WHERE(query) {
   const { fields, table, whereClause } = parse_query_with_WHERE(query);
   const data = await readCSV(`${table}.csv`);
@@ -45,15 +65,10 @@ async function execute_SELECT_query_with_multiple_WHERE(query) {
   const data = await readCSV(`${table}.csv`);
 
   // Filtering based on WHERE clauses
-  const filteredData =
-    whereClauses && whereClauses.length > 0
-      ? data.filter((row) =>
-          whereClauses.every((clause) => {
-            // You can expand this to handle different operators
-            return row[clause.field] === clause.value;
-          })
-        )
-      : data;
+  const filteredData = whereClauses.length > 0
+        ? data.filter(row => whereClauses.every(clause => evaluateCondition(row, clause)))
+        : data;
+      
 
   // Selecting specified fields
   return filteredData.map((row) => {
