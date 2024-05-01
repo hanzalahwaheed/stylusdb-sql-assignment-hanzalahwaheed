@@ -1,6 +1,6 @@
 const readCSV = require('../../src/csvReader');
 const parseQuery = require('../../src/queryParser');
-const executeSELECTQuery = require('../../src/index');
+const execute_SELECT_query = require('../../src/index');
 
 test('Read CSV File', async () => {
     const data = await readCSV('./sample.csv');
@@ -22,7 +22,7 @@ test('Parse SQL Query', () => {
 
 test('Execute SQL Query', async () => {
     const query = 'SELECT id, name FROM sample';
-    const result = await executeSELECTQuery(query);
+    const result = await execute_SELECT_query(query);
     expect(result.length).toBeGreaterThan(0);
     expect(result[0]).toHaveProperty('id');
     expect(result[0]).toHaveProperty('name');
@@ -46,7 +46,7 @@ test('Parse SQL Query with WHERE Clause', () => {
 
 test('Execute SQL Query with WHERE Clause', async () => {
     const query = 'SELECT id, name FROM sample WHERE age = 25';
-    const result = await executeSELECTQuery(query);
+    const result = await execute_SELECT_query(query);
     expect(result.length).toBe(1);
     expect(result[0]).toHaveProperty('id');
     expect(result[0]).toHaveProperty('name');
@@ -73,21 +73,21 @@ test('Parse SQL Query with Multiple WHERE Clauses', () => {
 
 test('Execute SQL Query with Multiple WHERE Clause', async () => {
     const query = 'SELECT id, name FROM sample WHERE age = 30 AND name = John';
-    const result = await executeSELECTQuery(query);
+    const result = await execute_SELECT_query(query);
     expect(result.length).toBe(1);
     expect(result[0]).toEqual({ id: '1', name: 'John' });
 });
 
 test('Execute SQL Query with Greater Than', async () => {
     const queryWithGT = 'SELECT id FROM sample WHERE age > 22';
-    const result = await executeSELECTQuery(queryWithGT);
+    const result = await execute_SELECT_query(queryWithGT);
     expect(result.length).toEqual(2);
     expect(result[0]).toHaveProperty('id');
 });
 
 test('Execute SQL Query with Not Equal to', async () => {
     const queryWithGT = 'SELECT name FROM sample WHERE age != 25';
-    const result = await executeSELECTQuery(queryWithGT);
+    const result = await execute_SELECT_query(queryWithGT);
     expect(result.length).toEqual(2);
     expect(result[0]).toHaveProperty('name');
 });

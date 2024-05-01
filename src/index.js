@@ -1,7 +1,11 @@
-const { parseQuery, parseQueryWithWHERE } = require("./queryParser");
+const {
+  parseQuery,
+  parseQueryWithWHERE,
+  parseQueryWithMultipleWHERE,
+} = require("./queryParser");
 const readCSV = require("./csvReader");
 
-async function executeSELECTQuery(query) {
+async function execute_SELECT_query(query) {
   const { fields, table } = parseQuery(query);
   const data = await readCSV(`${table}.csv`);
 
@@ -15,7 +19,7 @@ async function executeSELECTQuery(query) {
   });
 }
 
-async function executeSELECTQueryWithWHERE(query) {
+async function execute_SELECT_query_with_WHERE(query) {
   const { fields, table, whereClause } = parseQueryWithWHERE(query);
   const data = await readCSV(`${table}.csv`);
 
@@ -26,8 +30,6 @@ async function executeSELECTQueryWithWHERE(query) {
         return row[field] === value;
       })
     : data;
-
-  // Selecting the specified fields
   return filteredData.map((row) => {
     const selectedRow = {};
     fields.forEach((field) => {
@@ -37,4 +39,33 @@ async function executeSELECTQueryWithWHERE(query) {
   });
 }
 
-module.exports = { executeSELECTQuery, executeSELECTQueryWithWHERE };
+async function execute_SELECT_query_with_multiple_WHERE(query) {
+  const { fields, table, whereClauses } = parseQueryWithMultipleWHERE(query);
+  const data = await readCSV(`${table}.csv`);
+
+  // Filtering based on WHERE clauses
+  const filteredData =
+    whereClauses && whereClauses.length > 0
+      ? data.filter((row) =>
+          whereClauses.every((clause) => {
+            // You can expand this to handle different operators
+            return row[clause.field] === clause.value;
+          })
+        )
+      : data;
+
+  // Selecting specified fields
+  return filteredData.map((row) => {
+    const selectedRow = {};
+    fields.forEach((field) => {
+      selectedRow[field] = row[field];
+    });
+    return selectedRow;
+  });
+}
+
+module.exports = {
+  execute_SELECT_query,
+  execute_SELECT_query_with_WHERE,
+  execute_SELECT_query_with_multiple_WHERE,
+};
