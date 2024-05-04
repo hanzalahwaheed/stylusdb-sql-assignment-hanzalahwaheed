@@ -65,10 +65,12 @@ async function execute_SELECT_query_with_multiple_WHERE(query) {
   const data = await readCSV(`${table}.csv`);
 
   // Filtering based on WHERE clauses
-  const filteredData = whereClauses.length > 0
-        ? data.filter(row => whereClauses.every(clause => evaluateCondition(row, clause)))
-        : data;
-      
+  const filteredData =
+    whereClauses.length > 0
+      ? data.filter((row) =>
+          whereClauses.every((clause) => evaluateCondition(row, clause))
+        )
+      : data;
 
   // Selecting specified fields
   return filteredData.map((row) => {
