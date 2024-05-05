@@ -4,6 +4,7 @@ const {
   execute_SELECT_query,
   execute_SELECT_query_with_WHERE,
   execute_SELECT_query_with_multiple_WHERE,
+  execute_SELECT_query_with_JOINS,
 } = require("../../src/index");
 
 test("Read CSV File", async () => {
@@ -65,7 +66,7 @@ test("Execute SQL Query with WHERE Clause", async () => {
 
 test("Parse SQL Query with Multiple WHERE Clauses", () => {
   const query = "SELECT id, name FROM student WHERE age = 30 AND name = John";
-  const parsed = execute_SELECT_query_with_multiple_WHERE(query);
+  const parsed = parse_query_JOINS(query);
   expect(parsed).toEqual({
     fields: ["id", "name"],
     table: "student",
@@ -88,21 +89,21 @@ test("Parse SQL Query with Multiple WHERE Clauses", () => {
 
 test("Execute SQL Query with Complex WHERE Clause", async () => {
   const query = "SELECT id, name FROM student WHERE age = 30 AND name = John";
-  const result = await execute_SELECT_query(query);
+  const result = await execute_SELECT_query_with_multiple_WHERE(query);
   expect(result.length).toBe(1);
   expect(result[0]).toEqual({ id: "1", name: "John" });
 });
 
 test("Execute SQL Query with Greater Than", async () => {
   const queryWithGT = "SELECT id FROM student WHERE age > 22";
-  const result = await execute_SELECT_query(queryWithGT);
+  const result = await execute_SELECT_query_with_multiple_WHERE(queryWithGT);
   expect(result.length).toEqual(2);
   expect(result[0]).toHaveProperty("id");
 });
 
 test("Execute SQL Query with Not Equal to", async () => {
   const queryWithGT = "SELECT name FROM student WHERE age != 25";
-  const result = await execute_SELECT_query(queryWithGT);
+  const result = await execute_SELECT_query_with_multiple_WHERE(queryWithGT);
   expect(result.length).toEqual(2);
   expect(result[0]).toHaveProperty("name");
 });
@@ -110,7 +111,7 @@ test("Execute SQL Query with Not Equal to", async () => {
 test("Parse SQL Query with INNER JOIN", async () => {
   const query =
     "SELECT student.name, enrollment.course FROM student INNER JOIN enrollment ON student.id=enrollment.student_id";
-  const result = await parse_query_JOINS(query);
+  const result = parse_query_JOINS(query);
   expect(result).toEqual({
     fields: ["student.name", "enrollment.course"],
     table: "student",
@@ -123,7 +124,7 @@ test("Parse SQL Query with INNER JOIN", async () => {
 test("Parse SQL Query with INNER JOIN and WHERE Clause", async () => {
   const query =
     "SELECT student.name, enrollment.course FROM student INNER JOIN enrollment ON student.id = enrollment.student_id WHERE student.age > 20";
-  const result = await parse_query_JOINS(query);
+  const result = parse_query_JOINS(query);
   expect(result).toEqual({
     fields: ["student.name", "enrollment.course"],
     table: "student",
@@ -136,7 +137,7 @@ test("Parse SQL Query with INNER JOIN and WHERE Clause", async () => {
 test("Execute SQL Query with INNER JOIN", async () => {
   const query =
     "SELECT student.name, enrollment.course FROM student INNER JOIN enrollment ON student.id=enrollment.student_id";
-  const result = await execute_SELECT_query(query);
+  const result = await execute_SELECT_query_with_JOINS(query);
   /*
     result = [
       { 'student.name': 'John', 'enrollment.course': 'Mathematics' },
@@ -158,7 +159,7 @@ test("Execute SQL Query with INNER JOIN", async () => {
 test("Execute SQL Query with INNER JOIN and a WHERE Clause", async () => {
   const query =
     "SELECT student.name, enrollment.course, student.age FROM student INNER JOIN enrollment ON student.id = enrollment.student_id WHERE student.age > 25";
-  const result = await execute_SELECT_query(query);
+  const result = await execute_SELECT_query_with_JOINS(query);
   /*
     result =  [
       {

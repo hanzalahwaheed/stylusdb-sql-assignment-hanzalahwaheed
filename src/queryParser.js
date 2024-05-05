@@ -19,7 +19,6 @@ function parse_query_with_WHERE(query) {
 
   if (match) {
     const [, fields, table, whereClause] = match;
-    console.log(whereClause);
     return {
       fields: fields.split(",").map((field) => field.trim()),
       table: table.trim(),
